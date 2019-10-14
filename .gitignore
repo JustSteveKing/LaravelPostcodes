@@ -5,3 +5,4 @@ phpcs.xml
 phpunit.xml
 .idea
 .env
+.phpunit.result.cache
