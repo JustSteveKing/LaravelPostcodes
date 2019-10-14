@@ -40,7 +40,6 @@ class Postcode implements Rule
      */
     public function message()
     {
-        return trans('postcodes::messages.postcode_invalid');
-        ;
+        return 'The submitted postcode is not a valid UK postcode';
     }
 }

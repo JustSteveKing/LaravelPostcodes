@@ -30,13 +30,6 @@ class PostcodesServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        $this->loadTranslationsFrom(
-            __DIR__ . '/../resources/lang',
-            'postcodes'
-        );
-
-        $this->publishes([
-            __DIR__ . '/../resources/lang' => resource_path('lang/vendor/postcodes'),
-        ]);
+        //
     }
 }

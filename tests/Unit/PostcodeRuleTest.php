@@ -38,4 +38,11 @@ class PostcodeRuleTest extends TestCase
         $postcode = 'testing';
         $this->assertFalse($this->rule->passes('postcode', $postcode));
     }
+
+    public function testValidationMessageIsCorrect()
+    {
+        $string = 'The submitted postcode is not a valid UK postcode';
+
+        $this->assertEquals($this->rule->message(), $string);
+    }
 }
