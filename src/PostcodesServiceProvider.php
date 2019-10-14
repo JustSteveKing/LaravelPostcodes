@@ -17,7 +17,7 @@ class PostcodesServiceProvider extends ServiceProvider
             'services'
         );
 
-        $this->app->bind(PostcodeService::class, function ($app) {
+        $this->app->bind(PostcodeService::class, function () {
             return new PostcodeService(
                 new Client()
             );
