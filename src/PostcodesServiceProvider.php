@@ -24,7 +24,7 @@ class PostcodesServiceProvider extends ServiceProvider
         });
 
         \Illuminate\Validation\Rule::macro('postcode', function () {
-            return new \JustSteveKing\LaravelPostcodes\Rules\Postcode();
+            return new \JustSteveKing\LaravelPostcodes\Rules\Postcode(resolve(PostcodeService::class));
         });
     }
 
