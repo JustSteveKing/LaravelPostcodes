@@ -16,9 +16,9 @@ class Postcode implements Rule
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(PostcodeService $service)
     {
-        $this->service = resolve(PostcodeService::class);
+        $this->service = $service;
     }
 
     /**
