@@ -73,9 +73,9 @@ class PostcodeService
         }
 
         return collect($this->getPostResponse('postcodes', ['postcodes' => array_values($postcodes)], $filter))
-        ->map(function ($item, $key){
-            return $item->result;
-        });
+            ->map(function ($item, $key) {
+                return $item->result;
+            });
     }
 
     /**
