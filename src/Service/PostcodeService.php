@@ -67,6 +67,20 @@ class PostcodeService
     }
 
     /**
+     * Query the API for a given string
+     *
+     * @param  string  $query
+     *
+     * @return array|null
+     */
+    public function query(string $query): ?array
+    {
+        $queryString = http_build_query(['q' => $query]);
+
+        return $this->getResponse("postcodes?$queryString");
+    }
+
+    /**
      * Lookup a terminated postcode. Returns the postcode, year and month of termination.
      *
      * @param string $postcode
