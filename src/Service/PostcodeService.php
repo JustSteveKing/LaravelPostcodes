@@ -67,6 +67,20 @@ class PostcodeService
     }
 
     /**
+     * Query the API for a given string
+     *
+     * @param  string  $query
+     *
+     * @return array|null
+     */
+    public function query(string $query): ?array
+    {
+        $queryString = http_build_query(['q' => $query]);
+
+        return $this->getResponse("postcodes?$queryString");
+    }
+
+    /**
      * Get the response and return the result object
      *
      * @param string $uri
