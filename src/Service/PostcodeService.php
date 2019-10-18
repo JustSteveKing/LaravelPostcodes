@@ -57,6 +57,28 @@ class PostcodeService
     }
 
     /**
+     * Get the address details from a multiple postcodes at once
+     *
+     * @param array $postcodes
+     *
+     * @param array $filter - optional array of fields to return
+     * @return \Illuminate\Support\Collection
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getPostcodes(array $postcodes, array $filter = []): object
+    {
+        if (!empty($filter)) {
+            $filter = ['filter' => implode(',', $filter)];
+        }
+
+        return collect($this->getPostResponse('postcodes', ['postcodes' => array_values($postcodes)], $filter))
+        ->map(function ($item, $key){
+            return $item->result;
+        });
+    }
+
+    /**
      * Get the address details from a random postcode
      *
      * @return object
@@ -90,6 +112,30 @@ class PostcodeService
         $request = $this->http->request(
             'GET',
             $url
+        );
+
+        return json_decode($request->getBody()->getContents())->result;
+    }
+
+    /**
+     * Get the response of POST request and return the result object
+     *
+     * @param string $uri
+     * @param array $postData
+     * @param array $query
+     * @return
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    protected function getPostResponse(string $uri = null, array $postData = [], array $query = [])
+    {
+        $url = $this->url . $uri;
+        $request = $this->http->request(
+            'POST',
+            $url,
+            [
+                'query' => $query,
+                'json'  => $postData,
+            ]
         );
 
         return json_decode($request->getBody()->getContents())->result;
