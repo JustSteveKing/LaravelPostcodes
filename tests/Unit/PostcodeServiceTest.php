@@ -37,6 +37,14 @@ class PostcodeServiceTest extends TestCase
         $this->assertEquals($result->postcode, $this->postcode);
     }
 
+    public function testServiceCanGetOutwardCode()
+    {
+        $service = $this->service(200, json_encode(['result' => ['outcode' => substr($this->postcode, 0, 3)]]));
+        $result = $service->getOutwardCode(substr($this->postcode, 0, 3));
+
+        $this->assertEquals($result->outcode, substr($this->postcode, 0, 3));
+    }
+
     public function testServiceCanGetRandomPostcode()
     {
         $service = $this->service(200, json_encode(['result' => ['postcode' => $this->postcode]]));

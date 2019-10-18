@@ -57,6 +57,18 @@ class PostcodeService
     }
 
     /**
+     * Get information based on outward code including geo data
+     *
+     * @param string $outwardcode
+     *
+     * @return object
+     */
+    public function getOutwardCode(string $outwardcode): object
+    {
+        return $this->getResponse("outcodes/$outwardcode");
+    }
+
+    /**
      * Get the address details from a random postcode
      *
      * @return object
