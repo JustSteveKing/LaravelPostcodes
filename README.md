@@ -62,7 +62,7 @@ class SomeController extends Controller
     public function store(Request $request)
     {
         // validation using example above
-        $location = $service->getPostcode($request->postcode);
+        $location = $this->postcodes->getPostcode($request->postcode);
     }
 }
 ```
