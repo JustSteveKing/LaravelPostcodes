@@ -67,6 +67,18 @@ class PostcodeService
     }
 
     /**
+     * Lookup a terminated postcode. Returns the postcode, year and month of termination.
+     *
+     * @param string $postcode
+     *
+     * @return object
+     */
+    public function getTerminatedPostcode($postcode)
+    {
+        return $this->getResponse("terminated_postcodes/$postcode");
+    }
+
+    /**
      * Get the response and return the result object
      *
      * @param string $uri
