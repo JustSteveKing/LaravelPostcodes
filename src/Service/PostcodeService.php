@@ -93,6 +93,18 @@ class PostcodeService
     }
 
     /**
+     * Autocomplete a postcode partial.
+     *
+     * @param string $partialPostcode
+     *
+     * @return array|null
+     */
+    public function autocomplete(string $partialPostcode): ?array
+    {
+        return $this->getResponse("postcodes/$partialPostcode/autocomplete");
+    }
+
+    /**
      * Get the response and return the result object
      *
      * @param string $uri
