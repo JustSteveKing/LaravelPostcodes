@@ -68,6 +68,19 @@ class PostcodeServiceTest extends TestCase
         $this->assertNotNull($result->postcode);
     }
 
+    public function testServiceCanGetNearestPostcodes()
+    {
+        $serviceFound = $this->service(
+            200,
+            json_encode(['result' => [['postcode' => $this->postcode]]])
+        );
+
+        $resultFound = $serviceFound->nearest($this->postcode);
+
+        $this->assertIsArray($resultFound);
+        $this->assertCount(1, $resultFound);
+    }
+
     private function service(int $status, string $body = null): PostcodeService
     {
         $mock = new MockHandler([new Response($status, [], $body)]);
