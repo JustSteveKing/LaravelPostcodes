@@ -76,6 +76,43 @@ class PostcodeServiceTest extends TestCase
         $this->assertNotNull($result->postcode);
     }
 
+    public function testServiceCanAutocompletePostcode(): void
+    {
+        $data = [
+            'status' => 200,
+            'result' => [
+                "AB10 1AB",
+                "AB10 1AF",
+                "AB10 1AG",
+                "AB10 1AH",
+                "AB10 1AL",
+                "AB10 1AN",
+                "AB10 1AP",
+                "AB10 1AQ",
+                "AB10 1AR",
+                "AB10 1AS",
+            ],
+        ];
+        $service = $this->service(200, json_encode($data));
+
+        $actual = $service->autocomplete('A');
+
+        $this->assertSame($data['result'], $actual);
+    }
+
+    public function testServiceCantAutocompletePostcode(): void
+    {
+        $data = [
+            'status' => 200,
+            'result' => null,
+        ];
+        $service = $this->service(200, json_encode($data));
+
+        $actual = $service->autocomplete('XYZ');
+
+        $this->assertNull($actual);
+    }
+
     private function service(int $status, string $body = null): PostcodeService
     {
         $mock = new MockHandler([new Response($status, [], $body)]);
