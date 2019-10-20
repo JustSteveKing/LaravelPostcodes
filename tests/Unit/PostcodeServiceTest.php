@@ -62,7 +62,15 @@ class PostcodeServiceTest extends TestCase
 
     public function testServiceCanGetTerminatedPostcode()
     {
-        $service = $this->service(200, json_encode(['result' => ['postcode' => $this->terminatedPostcode, "year_terminated" => 1996, "month_terminated" => 6, "longitude" => -2.242851, "latitude" => 57.101474]]));
+        $service = $this->service(200, json_encode([
+            'result' => [
+                'postcode' => $this->terminatedPostcode,
+                'year_terminated' => 1996,
+                'month_terminated' => 6,
+                'longitude' => -2.242851,
+                'latitude' => 57.101474,
+            ],
+        ]));
         $result = $service->getTerminatedPostcode($this->terminatedPostcode);
 
         $this->assertNotNull($result->postcode);
