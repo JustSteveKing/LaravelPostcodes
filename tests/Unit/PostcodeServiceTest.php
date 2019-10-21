@@ -127,6 +127,19 @@ class PostcodeServiceTest extends TestCase
         $this->assertRequest('GET', 'https://api.postcodes.io/postcodes/some-postcode-without-autocomplete-results/autocomplete');
     }
 
+    public function testServiceCanGetNearestPostcodes()
+    {
+        $serviceFound = $this->service(
+            200,
+            json_encode(['result' => [['postcode' => $this->postcode]]])
+        );
+
+        $resultFound = $serviceFound->nearest($this->postcode);
+
+        $this->assertIsArray($resultFound);
+        $this->assertCount(1, $resultFound);
+    }
+
     private function service(int $status, string $body = null): PostcodeService
     {
         $this->handler = new MockHandler([new Response($status, [], $body)]);
