@@ -94,8 +94,9 @@ class PostcodeServiceTest extends TestCase
             ],
         ];
         $service = $this->service(200, json_encode($data));
+        $partialPostcode = 'some-postcode-with-autocomplete-results';
 
-        $actual = $service->autocomplete('A');
+        $actual = $service->autocomplete($partialPostcode);
 
         $this->assertSame($data['result'], $actual);
     }
@@ -107,8 +108,9 @@ class PostcodeServiceTest extends TestCase
             'result' => null,
         ];
         $service = $this->service(200, json_encode($data));
+        $partialPostcode = 'some-postcode-without-autocomplete-results';
 
-        $actual = $service->autocomplete('XYZ');
+        $actual = $service->autocomplete($partialPostcode);
 
         $this->assertNull($actual);
     }
