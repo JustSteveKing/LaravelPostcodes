@@ -32,7 +32,7 @@ class PostcodeServiceTest extends TestCase
 
         $serviceSuccess = $this->service(200, json_encode(['result' => true]));
         $this->assertTrue($serviceSuccess->validate($this->postcode));
-        $this->assertRequest('GET', 'https://api.postcodes.io/postcodes/test/validate');
+        $this->assertRequest('GET', 'https://api.postcodes.io/postcodes/N11 1QZ/validate');
     }
 
     public function testServiceCanGetPostcode()
