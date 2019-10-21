@@ -13,6 +13,9 @@ use JustSteveKing\LaravelPostcodes\Service\PostcodeService;
 
 class PostcodeServiceTest extends TestCase
 {
+    /** @var MockHandler */
+    protected $handler;
+
     protected $postcode = 'N11 1QZ';
     protected $terminatedPostcode = 'AB1 0AA';
 
@@ -25,9 +28,11 @@ class PostcodeServiceTest extends TestCase
     {
         $serviceFail = $this->service(200, json_encode(['result' => false]));
         $this->assertEquals(false, $serviceFail->validate('test'));
+        $this->assertRequest('GET', 'https://api.postcodes.io/postcodes/test/validate');
 
         $serviceSuccess = $this->service(200, json_encode(['result' => true]));
         $this->assertTrue($serviceSuccess->validate($this->postcode));
+        $this->assertRequest('GET', 'https://api.postcodes.io/postcodes/test/validate');
     }
 
     public function testServiceCanGetPostcode()
@@ -36,6 +41,7 @@ class PostcodeServiceTest extends TestCase
         $result = $service->getPostcode($this->postcode);
 
         $this->assertEquals($result->postcode, $this->postcode);
+        $this->assertRequest('GET', 'https://api.postcodes.io/postcodes/N11 1QZ');
     }
 
     public function testServiceCanGetRandomPostcode()
@@ -44,6 +50,7 @@ class PostcodeServiceTest extends TestCase
         $result = $service->getRandomPostcode();
 
         $this->assertNotNull($result->postcode);
+        $this->assertRequest('GET', 'https://api.postcodes.io/random/postcodes');
     }
 
     public function testServiceCanQueryPostcode()
@@ -53,11 +60,13 @@ class PostcodeServiceTest extends TestCase
 
         $this->assertIsArray($resultFound);
         $this->assertCount(1, $resultFound);
+        $this->assertRequest('GET', 'https://api.postcodes.io/postcodes?q=N11 1QZ');
 
         $serviceNull = $this->service(200, json_encode(['result' => null]));
-        $resultNull = $serviceNull->query($this->postcode);
+        $resultNull = $serviceNull->query('AA1 1AA');
 
         $this->assertNull($resultNull);
+        $this->assertRequest('GET', 'https://api.postcodes.io/postcodes?q=AA1 1AA');
     }
 
     public function testServiceCanGetTerminatedPostcode()
@@ -74,6 +83,7 @@ class PostcodeServiceTest extends TestCase
         $result = $service->getTerminatedPostcode($this->terminatedPostcode);
 
         $this->assertNotNull($result->postcode);
+        $this->assertRequest('GET', 'https://api.postcodes.io/terminated_postcodes/AB1 0AA');
     }
 
     public function testServiceCanAutocompletePostcode(): void
@@ -99,6 +109,7 @@ class PostcodeServiceTest extends TestCase
         $actual = $service->autocomplete($partialPostcode);
 
         $this->assertSame($data['result'], $actual);
+        $this->assertRequest('GET', 'https://api.postcodes.io/postcodes/some-postcode-with-autocomplete-results/autocomplete');
     }
 
     public function testServiceCantAutocompletePostcode(): void
@@ -113,14 +124,23 @@ class PostcodeServiceTest extends TestCase
         $actual = $service->autocomplete($partialPostcode);
 
         $this->assertNull($actual);
+        $this->assertRequest('GET', 'https://api.postcodes.io/postcodes/some-postcode-without-autocomplete-results/autocomplete');
     }
 
     private function service(int $status, string $body = null): PostcodeService
     {
-        $mock = new MockHandler([new Response($status, [], $body)]);
-        $handler = HandlerStack::create($mock);
-        $client = new Client(['handler' => $handler]);
+        $this->handler = new MockHandler([new Response($status, [], $body)]);
+        $stack = HandlerStack::create($this->handler);
+        $client = new Client(['handler' => $stack]);
 
         return new PostcodeService($client);
+    }
+
+    private function assertRequest(string $method, string $uri): void
+    {
+        $request = $this->handler->getLastRequest();
+
+        $this->assertSame($method, $request->getMethod());
+        $this->assertSame($uri, urldecode((string) $request->getUri()));
     }
 }
