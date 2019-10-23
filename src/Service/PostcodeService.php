@@ -79,6 +79,18 @@ class PostcodeService
     }
 
     /**
+     * Get information based on outward code including geo data
+     *
+     * @param string $outwardcode
+     *
+     * @return object
+     */
+    public function getOutwardCode(string $outwardcode): object
+    {
+        return $this->getResponse("outcodes/$outwardcode");
+    }
+
+    /**
      * Get the address details from a random postcode
      *
      * @return object
@@ -86,6 +98,32 @@ class PostcodeService
     public function getRandomPostcode()
     {
         return $this->getResponse("random/postcodes");
+    }
+
+    /**
+     * Query the API for a given string
+     *
+     * @param string $query
+     *
+     * @return array|null
+     */
+    public function query(string $query): ?array
+    {
+        $queryString = http_build_query(['q' => $query]);
+
+        return $this->getResponse("postcodes?$queryString");
+    }
+
+    /**
+     * Get data for the postcodes nearest to the passed postcode
+     *
+     * @param string $postcode
+     *
+     * return array|null
+     */
+    public function nearest(string $postcode): ?array
+    {
+        return $this->getResponse("postcodes/$postcode/nearest");
     }
 
     /**
@@ -98,6 +136,18 @@ class PostcodeService
     public function getTerminatedPostcode($postcode)
     {
         return $this->getResponse("terminated_postcodes/$postcode");
+    }
+
+    /**
+     * Autocomplete a postcode partial.
+     *
+     * @param string $partialPostcode
+     *
+     * @return array|null
+     */
+    public function autocomplete(string $partialPostcode): ?array
+    {
+        return $this->getResponse("postcodes/$partialPostcode/autocomplete");
     }
 
     /**
