@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JustSteveKing\LaravelPostcodes\Service;
 
 use GuzzleHttp\Client;
+use function GuzzleHttp\Psr7\build_query;
 
 class PostcodeService
 {
@@ -69,10 +70,10 @@ class PostcodeService
     public function getPostcodes(array $postcodes, array $filter = []): object
     {
         if (!empty($filter)) {
-            $filter = ['filter' => implode(',', $filter)];
+            $filter = build_query(['filter' => implode(',', $filter)]);
         }
 
-        return collect($this->getPostResponse('postcodes', ['postcodes' => array_values($postcodes)], $filter))
+        return collect($this->getResponse('postcodes?' . $filter, 'POST', ['postcodes' => array_values($postcodes)]))
             ->map(function ($item, $key) {
                 return $item->result;
             });
@@ -155,7 +156,7 @@ class PostcodeService
      *
      * @param string $uri
      */
-    protected function getResponse(string $uri = null)
+    protected function getOldResponse(string $uri = null)
     {
         $url = $this->url . $uri;
 
@@ -168,24 +169,27 @@ class PostcodeService
     }
 
     /**
-     * Get the response of POST request and return the result object
+     * Get the response and return the result object
      *
-     * @param string $uri
-     * @param array $postData
-     * @param array $query
-     * @return
+     * @param string|null $uri
+     * @param string $method
+     * @param array $data - data to be sent in post/patch/put request
+     * @param array $options - array of options to be passed to curl, if $data is passed 'json' will be overwritten
+     * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    protected function getPostResponse(string $uri = null, array $postData = [], array $query = [])
+    protected function getResponse(string $uri = null, string $method = 'GET', array $data = [], array $options = [])
     {
         $url = $this->url . $uri;
+
+        if (!empty($data)) {
+            $options['json'] = $data;
+        }
+
         $request = $this->http->request(
-            'POST',
+            $method,
             $url,
-            [
-                'query' => $query,
-                'json'  => $postData,
-            ]
+            $options
         );
 
         return json_decode($request->getBody()->getContents())->result;
