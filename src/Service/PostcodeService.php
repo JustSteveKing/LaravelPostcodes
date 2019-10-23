@@ -93,6 +93,18 @@ class PostcodeService
     }
 
     /**
+     * Get data for the postcodes nearest to the passed postcode
+     *
+     * @param string $postcode
+     *
+     * return array|null
+     */
+    public function nearest(string $postcode): ?array
+    {
+        return $this->getResponse("postcodes/$postcode/nearest");
+    }
+
+    /**
      * Lookup a terminated postcode. Returns the postcode, year and month of termination.
      *
      * @param string $postcode
@@ -102,6 +114,18 @@ class PostcodeService
     public function getTerminatedPostcode($postcode)
     {
         return $this->getResponse("terminated_postcodes/$postcode");
+    }
+
+    /**
+     * Autocomplete a postcode partial.
+     *
+     * @param string $partialPostcode
+     *
+     * @return array|null
+     */
+    public function autocomplete(string $partialPostcode): ?array
+    {
+        return $this->getResponse("postcodes/$partialPostcode/autocomplete");
     }
 
     /**
