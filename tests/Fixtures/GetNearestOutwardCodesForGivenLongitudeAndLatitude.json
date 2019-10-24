@@ -1,0 +1,48 @@
+{
+    "status": 200,
+    "result": [
+        {
+            "outcode": "CM8",
+            "longitude": 0.637469034883721,
+            "latitude": 51.8052450034884,
+            "northings": 215134,
+            "eastings": 581935,
+            "admin_district": [
+                "Braintree",
+                "Maldon"
+            ],
+            "parish": [
+                "Little Braxted",
+                "Faulkbourne",
+                "Black Notley",
+                "Rivenhall",
+                "Great Totham",
+                "Cressing",
+                "Witham",
+                "Great Braxted",
+                "White Notley",
+                "Silver End",
+                "Hatfield Peverel",
+                "Wickham Bishops"
+            ],
+            "admin_county": [
+                "Essex"
+            ],
+            "admin_ward": [
+                "Witham North",
+                "Witham Central",
+                "Great Totham",
+                "Wickham Bishops and Woodham",
+                "Silver End & Cressing",
+                "Witham West",
+                "Witham South",
+                "Hatfield Peverel & Terling",
+                "Great Notley & Black Notley"
+            ],
+            "country": [
+                "England"
+            ],
+            "distance": 1530.99401492
+        }
+    ]
+}
