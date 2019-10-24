@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace JustSteveKing\LaravelPostcodes\Service;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use JustSteveKing\LaravelPostcodes\Service\BulkReverseGeocoding\Geolocation;
 
 class PostcodeService
 {
@@ -146,17 +148,40 @@ class PostcodeService
     }
 
     /**
+     * @param Geolocation[] $geolocations
+     *
+     * @return array|null
+     * @throws GuzzleException
+     */
+    public function bulkReverseGeocoding(array $geolocations): ?array
+    {
+        $body = json_encode(array_map(function (Geolocation $geolocation) {
+            return $geolocation->toArray();
+        }, $geolocations));
+        return $this->getResponse('postcodes', 'POST', $body);
+    }
+
+    /**
      * Get the response and return the result object
      *
      * @param string $uri
+     * @param string $method
+     * @param string|null $body
+     *
+     * @return mixed
+     * @throws GuzzleException
      */
-    protected function getResponse(string $uri = null)
-    {
+    protected function getResponse(
+        string $uri = null,
+        string $method = 'GET',
+        string $body = null
+    ) {
         $url = $this->url . $uri;
 
         $request = $this->http->request(
-            'GET',
-            $url
+            $method,
+            $url,
+            ['body' => $body]
         );
 
         return json_decode($request->getBody()->getContents())->result;
