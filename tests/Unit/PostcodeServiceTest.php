@@ -148,28 +148,28 @@ class PostcodeServiceTest extends TestCase
         $this->assertCount(1, $resultFound);
     }
 
-    public function testServiceCanGetNearestPostcodeForGivenLongtitudeAndLatitude()
+    public function testServiceCanGetNearestOutwardCodesForGivenLongitudeAndLatitude()
     {
         $json = file_get_contents(
             __DIR__
-            . '/../Fixtures/GetNearestPostcodesForGivenLongitudeAndLatitude.json'
+            . '/../Fixtures/GetNearestOutwardCodesForGivenLongitudeAndLatitude.json'
         );
         $serviceFound = $this->service(200, $json);
 
         $expected = json_encode(json_decode($json)->result);
-        $actual = json_encode($serviceFound->nearestPostcodesForLngLat(0.629834723775309, 51.7923246977375));
+        $actual = json_encode($serviceFound->nearestOutwardCodesForGivenLngAndLat(0.629834723775309, 51.7923246977375));
 
         $this->assertSame($expected, $actual);
     }
 
-    public function testServiceCanhandleEmptyResponseForNearestPostcodesForGivenLongtitudeAndLatitude()
+    public function testServiceCanHandleEmptyResponseForNearestOutwardCodesForGivenLongitudeAndLatitude()
     {
         $serviceFound = $this->service(
             200,
             json_encode(['result' => null])
         );
 
-        $actual = $serviceFound->nearestPostcodesForLngLat(0, 0);
+        $actual = $serviceFound->nearestOutwardCodesForGivenLngAndLat(0, 0);
 
         $this->assertNull($actual);
     }

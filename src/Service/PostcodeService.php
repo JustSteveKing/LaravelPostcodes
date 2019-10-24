@@ -129,17 +129,17 @@ class PostcodeService
     }
 
     /**
-     * Get nearest postcodes for a given longitude & latitude
+     * Get nearest outward codes for a given longitude & latitude
      *
      * @param float $latitude
      * @param float $longitude
      *
      * @return array|null
      */
-    public function nearestPostcodesForLngLat(float $longitude, float $latitude): ?array
+    public function nearestOutwardCodesForGivenLngAndLat(float $longitude, float $latitude): ?array
     {
         return $this->getResponse(sprintf(
-            'postcodes?lon=%s&lat=%s',
+            'outcodes?lon=%s&lat=%s',
             $longitude,
             $latitude
         ));
