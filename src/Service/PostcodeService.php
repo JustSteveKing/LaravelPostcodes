@@ -136,7 +136,7 @@ class PostcodeService
      *
      * @return array|null
      */
-    public function nearestPostcodesForLngLat(float $longitude, float $latitude): ?array
+    public function nearestPostcodesForLngLat(float $longitude, float $latitude): ?object
     {
         return $this->getResponse(sprintf(
             'postcodes?lon=%s&lat=%s',
