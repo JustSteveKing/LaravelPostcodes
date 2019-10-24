@@ -202,6 +202,26 @@ class PostcodeServiceTest extends TestCase
         $this->assertRequest('POST', 'https://api.postcodes.io/postcodes', $expectedRequestBody);
     }
 
+    public function testServiceCanHandleEmptyResponseForBulkReverseGeocoding(): void
+    {
+        $serviceFound = $this->service(
+            200,
+            json_encode(['result' => null])
+        );
+        $geolocations = [
+            new Geolocation(self::LONGITUDE, self::LATITUDE),
+            new Geolocation(-2.49690382054704, 53.5351312861402, 1000, 5),
+        ];
+
+        $actual = $serviceFound->bulkReverseGeocoding($geolocations, $geolocations);
+        $expectedRequestBody = json_encode(array_map(function (Geolocation $geolocation) {
+            return $geolocation->toArray();
+        }, $geolocations));
+
+        $this->assertNull($actual);
+        $this->assertRequest('POST', 'https://api.postcodes.io/postcodes', $expectedRequestBody);
+    }
+
     private function service(int $status, string $body = null): PostcodeService
     {
         $this->handler = new MockHandler([new Response($status, [], $body)]);
