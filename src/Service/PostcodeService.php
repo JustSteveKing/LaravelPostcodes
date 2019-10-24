@@ -129,6 +129,23 @@ class PostcodeService
     }
 
     /**
+     * Get nearest postcodes for a given longitude & latitude
+     *
+     * @param float $latitude
+     * @param float $longitude
+     *
+     * @return array|null
+     */
+    public function nearestPostcodesForLngLat(float $longitude, float $latitude): ?array
+    {
+        return $this->getResponse(sprintf(
+            'postcodes?lon=%s&lat=%s',
+            $longitude,
+            $latitude
+        ));
+    }
+
+    /**
      * Get the response and return the result object
      *
      * @param string $uri
