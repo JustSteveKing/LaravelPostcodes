@@ -195,8 +195,7 @@ class PostcodeService
         string $outwardcode,
         int $limit = 10,
         int $radius = 5000
-    ): Collection
-    {
+    ): Collection {
         $limit = ($limit > 100) ? 100 : $limit;
         $radius = ($radius > 100) ? 25000 : $radius;
 
@@ -239,8 +238,7 @@ class PostcodeService
         string $method = 'GET',
         array $data = [],
         array $options = []
-    )
-    {
+    ) {
         $url = $this->url . $uri;
 
         if (!empty($data)) {
