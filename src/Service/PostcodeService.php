@@ -169,20 +169,22 @@ class PostcodeService
     }
 
     /**
-     * Get the response and return the result object
+     * Get information about nearest outcodes based on outward code
      *
-     * @param string $uri
+     * @param string $outwardcode
+     *
+     * @param int $limit Needs to be less than 100
+     * @param int $radius Needs to be less than 25,000m
+     * @return object
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    protected function getOldResponse(string $uri = null)
+    public function getNearestOutwardCode(string $outwardcode, int $limit = 10, int $radius = 5000): object
     {
-        $url = $this->url . $uri;
+        $limit = ($limit > 100) ? 100 : $limit;
+        $radius = ($radius > 100) ? 25000 : $radius;
 
-        $request = $this->http->request(
-            'GET',
-            $url
-        );
-
-        return json_decode($request->getBody()->getContents())->result;
+        return collect($this->getResponse("outcodes/$outwardcode/nearest?limit=$limit&radius=$radius"));
     }
 
     /**

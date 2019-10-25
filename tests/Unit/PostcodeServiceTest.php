@@ -159,7 +159,7 @@ class PostcodeServiceTest extends TestCase
         $this->assertEquals($result->count(), 3);
         $this->assertEquals($result->first()->postcode, $postcodes[0]);
     }
-  
+
     public function testServiceCanGetNearestOutwardCodesForGivenLongitudeAndLatitude()
     {
         $json = file_get_contents(
@@ -184,6 +184,15 @@ class PostcodeServiceTest extends TestCase
         $actual = $serviceFound->nearestOutwardCodesForGivenLngAndLat(0, 0);
 
         $this->assertNull($actual);
+    }
+
+    public function testServiceCanGetNearestOutwardCode()
+    {
+        $service = $this->service(200, json_encode(['result' => [['outcode' => substr($this->postcode, 0, 3)]]]));
+        $result = $service->getNearestOutwardCode(substr($this->postcode, 0, 3));
+
+        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $result);
+        $this->assertEquals($result->first()->outcode, substr($this->postcode, 0, 3));
     }
 
     private function service(int $status, string $body = null): PostcodeService
