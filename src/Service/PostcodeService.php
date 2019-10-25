@@ -188,6 +188,25 @@ class PostcodeService
     }
 
     /**
+     * Get nearest postcodes for a given longitude & latitude
+     *
+     * @param float $longitude
+     * @param float $latitude
+     *
+     * @return object
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function nearestPostcodesForGivenLngAndLat(float $longitude, float $latitude): object
+    {
+        return collect($this->getResponse(sprintf(
+            'postcodes?lon=%s&lat=%s',
+            $longitude,
+            $latitude
+        )));
+    }
+
+    /**
      * Get the response and return the result object
      *
      * @param string|null $uri
