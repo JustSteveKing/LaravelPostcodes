@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JustSteveKing\LaravelPostcodes\Service;
 
 use GuzzleHttp\Client;
+use function GuzzleHttp\Psr7\build_query;
 
 class PostcodeService
 {
@@ -57,6 +58,28 @@ class PostcodeService
     }
 
     /**
+     * Get the address details from a multiple postcodes at once
+     *
+     * @param array $postcodes
+     *
+     * @param array $filter - optional array of fields to return
+     * @return \Illuminate\Support\Collection
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getPostcodes(array $postcodes, array $filter = []): object
+    {
+        if (!empty($filter)) {
+            $filter = build_query(['filter' => implode(',', $filter)]);
+        }
+
+        return collect($this->getResponse('postcodes?' . $filter, 'POST', ['postcodes' => array_values($postcodes)]))
+            ->map(function ($item) {
+                return $item->result;
+            });
+    }
+
+    /**
      * Get information based on outward code including geo data
      *
      * @param string $outwardcode
@@ -81,7 +104,7 @@ class PostcodeService
     /**
      * Query the API for a given string
      *
-     * @param  string  $query
+     * @param string $query
      *
      * @return array|null
      */
@@ -150,13 +173,40 @@ class PostcodeService
      *
      * @param string $uri
      */
-    protected function getResponse(string $uri = null)
+    protected function getOldResponse(string $uri = null)
     {
         $url = $this->url . $uri;
 
         $request = $this->http->request(
             'GET',
             $url
+        );
+
+        return json_decode($request->getBody()->getContents())->result;
+    }
+
+    /**
+     * Get the response and return the result object
+     *
+     * @param string|null $uri
+     * @param string $method
+     * @param array $data - data to be sent in post/patch/put request
+     * @param array $options - array of options to be passed to curl, if $data is passed 'json' will be overwritten
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    protected function getResponse(string $uri = null, string $method = 'GET', array $data = [], array $options = [])
+    {
+        $url = $this->url . $uri;
+
+        if (!empty($data)) {
+            $options['json'] = $data;
+        }
+
+        $request = $this->http->request(
+            $method,
+            $url,
+            $options
         );
 
         return json_decode($request->getBody()->getContents())->result;
