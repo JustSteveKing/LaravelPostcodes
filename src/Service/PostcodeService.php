@@ -193,7 +193,9 @@ class PostcodeService
         $limit = ($limit > 100) ? 100 : $limit;
         $radius = ($radius > 100) ? 25000 : $radius;
 
-        return collect($this->getResponse("outcodes/$outwardcode/nearest?limit=$limit&radius=$radius"));
+        return collect($this->getResponse(
+            "outcodes/$outwardcode/nearest?limit=$limit&radius=$radius"
+        ));
     }
 
     /**

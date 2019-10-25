@@ -117,8 +117,10 @@ class PostcodeServiceTest extends TestCase
         $actual = $service->autocomplete($partialPostcode);
 
         $this->assertSame($data['result'], $actual->toArray());
-        $this->assertRequest('GET',
-            'https://api.postcodes.io/postcodes/some-postcode-with-autocomplete-results/autocomplete');
+        $this->assertRequest(
+            'GET',
+            'https://api.postcodes.io/postcodes/some-postcode-with-autocomplete-results/autocomplete'
+        );
     }
 
     public function testServiceCantAutocompletePostcode(): void
@@ -133,8 +135,10 @@ class PostcodeServiceTest extends TestCase
         $actual = $service->autocomplete($partialPostcode);
 
         $this->assertTrue($actual->isEmpty());
-        $this->assertRequest('GET',
-            'https://api.postcodes.io/postcodes/some-postcode-without-autocomplete-results/autocomplete');
+        $this->assertRequest(
+            'GET',
+            'https://api.postcodes.io/postcodes/some-postcode-without-autocomplete-results/autocomplete'
+        );
     }
 
     public function testServiceCanGetNearestPostcodes()
