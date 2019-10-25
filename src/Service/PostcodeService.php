@@ -107,13 +107,15 @@ class PostcodeService
      *
      * @param string $query
      *
-     * @return array|null
+     * @return Collection
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function query(string $query): ?array
+    public function query(string $query): Collection
     {
         $queryString = http_build_query(['q' => $query]);
 
-        return $this->getResponse("postcodes?$queryString");
+        return collect($this->getResponse("postcodes?$queryString"));
     }
 
     /**
@@ -121,11 +123,13 @@ class PostcodeService
      *
      * @param string $postcode
      *
-     * return array|null
+     * @return Collection
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function nearest(string $postcode): ?array
+    public function nearest(string $postcode): Collection
     {
-        return $this->getResponse("postcodes/$postcode/nearest");
+        return collect($this->getResponse("postcodes/$postcode/nearest"));
     }
 
     /**
@@ -145,28 +149,32 @@ class PostcodeService
      *
      * @param string $partialPostcode
      *
-     * @return array|null
+     * @return Collection
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function autocomplete(string $partialPostcode): ?array
+    public function autocomplete(string $partialPostcode): Collection
     {
-        return $this->getResponse("postcodes/$partialPostcode/autocomplete");
+        return collect($this->getResponse("postcodes/$partialPostcode/autocomplete"));
     }
 
     /**
      * Get nearest outward codes for a given longitude & latitude
      *
-     * @param float $latitude
      * @param float $longitude
      *
-     * @return array|null
+     * @param float $latitude
+     * @return Collection
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function nearestOutwardCodesForGivenLngAndLat(float $longitude, float $latitude): ?array
+    public function nearestOutwardCodesForGivenLngAndLat(float $longitude, float $latitude): Collection
     {
-        return $this->getResponse(sprintf(
+        return collect($this->getResponse(sprintf(
             'outcodes?lon=%s&lat=%s',
             $longitude,
             $latitude
-        ));
+        )));
     }
 
     /**
