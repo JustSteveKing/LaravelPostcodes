@@ -66,14 +66,14 @@ class PostcodeServiceTest extends TestCase
         $serviceFound = $this->service(200, json_encode(['result' => [['postcode' => $this->postcode]]]));
         $resultFound = $serviceFound->query($this->postcode);
 
-        $this->assertIsArray($resultFound);
+        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $resultFound);
         $this->assertCount(1, $resultFound);
         $this->assertRequest('GET', 'https://api.postcodes.io/postcodes?q=N11 1QZ');
 
         $serviceNull = $this->service(200, json_encode(['result' => null]));
         $resultNull = $serviceNull->query('AA1 1AA');
 
-        $this->assertNull($resultNull);
+        $this->assertTrue($resultNull->isEmpty());
         $this->assertRequest('GET', 'https://api.postcodes.io/postcodes?q=AA1 1AA');
     }
 
@@ -81,11 +81,11 @@ class PostcodeServiceTest extends TestCase
     {
         $service = $this->service(200, json_encode([
             'result' => [
-                'postcode' => $this->terminatedPostcode,
-                'year_terminated' => 1996,
+                'postcode'         => $this->terminatedPostcode,
+                'year_terminated'  => 1996,
                 'month_terminated' => 6,
-                'longitude' => -2.242851,
-                'latitude' => 57.101474,
+                'longitude'        => -2.242851,
+                'latitude'         => 57.101474,
             ],
         ]));
         $result = $service->getTerminatedPostcode($this->terminatedPostcode);
@@ -116,8 +116,9 @@ class PostcodeServiceTest extends TestCase
 
         $actual = $service->autocomplete($partialPostcode);
 
-        $this->assertSame($data['result'], $actual);
-        $this->assertRequest('GET', 'https://api.postcodes.io/postcodes/some-postcode-with-autocomplete-results/autocomplete');
+        $this->assertSame($data['result'], $actual->toArray());
+        $this->assertRequest('GET',
+            'https://api.postcodes.io/postcodes/some-postcode-with-autocomplete-results/autocomplete');
     }
 
     public function testServiceCantAutocompletePostcode(): void
@@ -131,8 +132,9 @@ class PostcodeServiceTest extends TestCase
 
         $actual = $service->autocomplete($partialPostcode);
 
-        $this->assertNull($actual);
-        $this->assertRequest('GET', 'https://api.postcodes.io/postcodes/some-postcode-without-autocomplete-results/autocomplete');
+        $this->assertTrue($actual->isEmpty());
+        $this->assertRequest('GET',
+            'https://api.postcodes.io/postcodes/some-postcode-without-autocomplete-results/autocomplete');
     }
 
     public function testServiceCanGetNearestPostcodes()
@@ -144,18 +146,24 @@ class PostcodeServiceTest extends TestCase
 
         $resultFound = $serviceFound->nearest($this->postcode);
 
-        $this->assertIsArray($resultFound);
+        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $resultFound);
         $this->assertCount(1, $resultFound);
     }
 
     public function testServiceCanGetPostcodes()
     {
         $postcodes = ["PR3 0SG", "M45 6GN", "EX165BL"];
-        $service = $this->service(200, json_encode(["status" => 200, "result" => [["query" => "PR3 0SG", "result" => ["postcode" => "PR3 0SG",],], ["query" => "M45 6GN", "result" => ["postcode" => "M45 6GN",],], ["query" => "EX165BL", "result" => ["postcode" => "EX16 5BL"]]]]));
+        $service = $this->service(200, json_encode([
+            "status" => 200,
+            "result" => [
+                ["query" => "PR3 0SG", "result" => ["postcode" => "PR3 0SG",],],
+                ["query" => "M45 6GN", "result" => ["postcode" => "M45 6GN",],],
+                ["query" => "EX165BL", "result" => ["postcode" => "EX16 5BL"]]
+            ]
+        ]));
         $result = $service->getPostcodes($postcodes, ['postcode']);
 
         $this->assertInstanceOf(\Illuminate\Support\Collection::class, $result);
-
         $this->assertEquals($result->count(), 3);
         $this->assertEquals($result->first()->postcode, $postcodes[0]);
     }
@@ -183,7 +191,7 @@ class PostcodeServiceTest extends TestCase
 
         $actual = $serviceFound->nearestOutwardCodesForGivenLngAndLat(0, 0);
 
-        $this->assertNull($actual);
+        $this->assertTrue($actual->isEmpty());
     }
 
     public function testServiceCanGetNearestOutwardCode()
@@ -193,6 +201,37 @@ class PostcodeServiceTest extends TestCase
 
         $this->assertInstanceOf(\Illuminate\Support\Collection::class, $result);
         $this->assertEquals($result->first()->outcode, substr($this->postcode, 0, 3));
+    }
+
+    public function testServiceCanGetNearestPostcodesForGivenLngAndLat()
+    {
+        $json = file_get_contents(
+            __DIR__
+            . '/../Fixtures/GetNearestPostcodesForGivenLongitudeAndLatitude.json'
+        );
+
+        $serviceFound = $this->service(200, $json);
+
+        $expected = json_encode(json_decode($json)->result);
+
+        $actual = json_encode(
+            $serviceFound->nearestPostcodesForGivenLngAndLat(0.629834723775309, 51.7923246977375)
+                ->toArray()
+        );
+
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testServiceCanHandleEmptyResponseForCanGetNearestPostcodesForGivenLngAndLat()
+    {
+        $serviceFound = $this->service(
+            200,
+            json_encode(['result' => null])
+        );
+
+        $actual = $serviceFound->nearestPostcodesForGivenLngAndLat(0, 0);
+
+        $this->assertTrue($actual->isEmpty());
     }
 
     private function service(int $status, string $body = null): PostcodeService
@@ -209,6 +248,6 @@ class PostcodeServiceTest extends TestCase
         $request = $this->handler->getLastRequest();
 
         $this->assertSame($method, $request->getMethod());
-        $this->assertSame($uri, urldecode((string) $request->getUri()));
+        $this->assertSame($uri, urldecode((string)$request->getUri()));
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JustSteveKing\LaravelPostcodes\Service;
 
 use GuzzleHttp\Client;
+use Illuminate\Support\Collection;
 use function GuzzleHttp\Psr7\build_query;
 
 class PostcodeService
@@ -63,11 +64,11 @@ class PostcodeService
      * @param array $postcodes
      *
      * @param array $filter - optional array of fields to return
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getPostcodes(array $postcodes, array $filter = []): object
+    public function getPostcodes(array $postcodes, array $filter = []): Collection
     {
         if (!empty($filter)) {
             $filter = build_query(['filter' => implode(',', $filter)]);
@@ -106,13 +107,15 @@ class PostcodeService
      *
      * @param string $query
      *
-     * @return array|null
+     * @return Collection
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function query(string $query): ?array
+    public function query(string $query): Collection
     {
         $queryString = http_build_query(['q' => $query]);
 
-        return $this->getResponse("postcodes?$queryString");
+        return collect($this->getResponse("postcodes?$queryString"));
     }
 
     /**
@@ -120,11 +123,13 @@ class PostcodeService
      *
      * @param string $postcode
      *
-     * return array|null
+     * @return Collection
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function nearest(string $postcode): ?array
+    public function nearest(string $postcode): Collection
     {
-        return $this->getResponse("postcodes/$postcode/nearest");
+        return collect($this->getResponse("postcodes/$postcode/nearest"));
     }
 
     /**
@@ -144,28 +149,32 @@ class PostcodeService
      *
      * @param string $partialPostcode
      *
-     * @return array|null
+     * @return Collection
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function autocomplete(string $partialPostcode): ?array
+    public function autocomplete(string $partialPostcode): Collection
     {
-        return $this->getResponse("postcodes/$partialPostcode/autocomplete");
+        return collect($this->getResponse("postcodes/$partialPostcode/autocomplete"));
     }
 
     /**
      * Get nearest outward codes for a given longitude & latitude
      *
-     * @param float $latitude
      * @param float $longitude
      *
-     * @return array|null
+     * @param float $latitude
+     * @return Collection
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function nearestOutwardCodesForGivenLngAndLat(float $longitude, float $latitude): ?array
+    public function nearestOutwardCodesForGivenLngAndLat(float $longitude, float $latitude): Collection
     {
-        return $this->getResponse(sprintf(
+        return collect($this->getResponse(sprintf(
             'outcodes?lon=%s&lat=%s',
             $longitude,
             $latitude
-        ));
+        )));
     }
 
     /**
@@ -175,16 +184,35 @@ class PostcodeService
      *
      * @param int $limit Needs to be less than 100
      * @param int $radius Needs to be less than 25,000m
-     * @return object
+     * @return Collection
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getNearestOutwardCode(string $outwardcode, int $limit = 10, int $radius = 5000): object
+    public function getNearestOutwardCode(string $outwardcode, int $limit = 10, int $radius = 5000): Collection
     {
         $limit = ($limit > 100) ? 100 : $limit;
         $radius = ($radius > 100) ? 25000 : $radius;
 
         return collect($this->getResponse("outcodes/$outwardcode/nearest?limit=$limit&radius=$radius"));
+    }
+
+    /**
+     * Get nearest postcodes for a given longitude & latitude
+     *
+     * @param float $longitude
+     * @param float $latitude
+     *
+     * @return Collection
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function nearestPostcodesForGivenLngAndLat(float $longitude, float $latitude): Collection
+    {
+        return collect($this->getResponse(sprintf(
+            'postcodes?lon=%s&lat=%s',
+            $longitude,
+            $latitude
+        )));
     }
 
     /**
