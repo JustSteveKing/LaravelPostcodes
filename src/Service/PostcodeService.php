@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JustSteveKing\LaravelPostcodes\Service;
 
 use GuzzleHttp\Client;
+use Illuminate\Support\Collection;
 use function GuzzleHttp\Psr7\build_query;
 
 class PostcodeService
@@ -63,11 +64,11 @@ class PostcodeService
      * @param array $postcodes
      *
      * @param array $filter - optional array of fields to return
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getPostcodes(array $postcodes, array $filter = []): object
+    public function getPostcodes(array $postcodes, array $filter = []): Collection
     {
         if (!empty($filter)) {
             $filter = build_query(['filter' => implode(',', $filter)]);
@@ -175,11 +176,11 @@ class PostcodeService
      *
      * @param int $limit Needs to be less than 100
      * @param int $radius Needs to be less than 25,000m
-     * @return object
+     * @return Collection
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getNearestOutwardCode(string $outwardcode, int $limit = 10, int $radius = 5000): object
+    public function getNearestOutwardCode(string $outwardcode, int $limit = 10, int $radius = 5000): Collection
     {
         $limit = ($limit > 100) ? 100 : $limit;
         $radius = ($radius > 100) ? 25000 : $radius;
@@ -193,11 +194,11 @@ class PostcodeService
      * @param float $longitude
      * @param float $latitude
      *
-     * @return object
+     * @return Collection
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function nearestPostcodesForGivenLngAndLat(float $longitude, float $latitude): object
+    public function nearestPostcodesForGivenLngAndLat(float $longitude, float $latitude): Collection
     {
         return collect($this->getResponse(sprintf(
             'postcodes?lon=%s&lat=%s',
