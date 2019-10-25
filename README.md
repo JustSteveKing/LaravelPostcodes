@@ -13,11 +13,32 @@ A service wrapper around postcodes.io with validation rule and macro
 
 Via Composer
 
-``` bash
+```bash
 $ composer require juststeveking/laravel-postcodes
 ```
 
-## Usage
+After installation, merge configuration for services uusing:
+
+```bash
+$ php artisan vendor:publish --provider="JustSteveKing\LaravelPostcodes\PostcodesServiceProvider"
+```
+
+If, for some reason, this doesn't work please use the following steps:
+
+- Add the following into the `config/services.php` configuration file:
+
+```php
+<?php
+
+'postcodes' => [
+    'url' => env('POSTCODES_URL', 'https://api.postcodes.io/')
+],
+```
+
+- Add `POSTCODES_URL` to your `.env` file and add `https://api.postcodes.io/` as the value.
+
+
+## Basic Usage
 
 You can use the validation rule:
 
@@ -65,6 +86,139 @@ class SomeController extends Controller
         $location = $this->postcodes->getPostcode($request->postcode);
     }
 }
+```
+
+### Validate
+
+```php
+<?php
+
+$service = resolve(PostcodeService::class);
+
+$service->validate('AB10 1AB');
+```
+
+### Validate Postcode
+
+```php
+<?php
+
+$service = resolve(PostcodeService::class);
+
+$service->validate('AB10 1AB');
+```
+
+### Get Postcode information
+
+```php
+<?php
+
+$service = resolve(PostcodeService::class);
+
+$service->getPostcode('AB10 1AB');
+```
+
+
+### Bulk Lookup Postcodes
+
+```php
+<?php
+
+$service = resolve(PostcodeService::class);
+
+$service->getPostcodes([
+    'AB10 1AB',
+    'AB10 1AF',
+    'AB10 1AG',
+]);
+```
+
+### Get nearest postcodes for a given longitude & latitude
+
+```php
+<?php
+
+$service = resolve(PostcodeService::class);
+
+$service->nearestPostcodesForGivenLngAndLat(
+    0.629806,
+    51.792326
+);
+```
+
+### Nearest postcodes for postcode
+
+```php
+<?php
+
+$service = resolve(PostcodeService::class);
+
+$service->nearest('AB10 1AB');
+```
+
+### Autocomplete a postcode partial
+
+```php
+<?php
+
+$service = resolve(PostcodeService::class);
+
+$service->autocomplete('AB10');
+```
+
+### Query for postcode
+
+```php
+<?php
+
+$service = resolve(PostcodeService::class);
+
+$service->query('AB10 1AB');
+```
+
+### Lookup terminated postcode
+
+```php
+<?php
+
+$service = resolve(PostcodeService::class);
+
+$service->getTerminatedPostcode('AB1 0AA');
+```
+
+### Lookup Outward Code
+
+```php
+<?php
+
+$service = resolve(PostcodeService::class);
+
+$service->getOutwardCode('N11');
+```
+
+### Nearest outward code for outward code
+
+```php
+<?php
+
+$service = resolve(PostcodeService::class);
+
+$limit = 80; // Limit needs to be less than 100
+$radius = 15000; // Radius needs to be less than 25000
+$service->getNearestOutwardCode('N11', $limit, $radius);
+```
+
+### Get nearest outward codes for a given longitude & latitude
+
+```php
+<?php
+
+$service = resolve(PostcodeService::class);
+
+$service->nearestOutwardCodesForGivenLngAndLat(
+    0.629806,
+    51.792326
+);
 ```
 
 ## Change log

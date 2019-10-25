@@ -74,10 +74,13 @@ class PostcodeService
             $filter = build_query(['filter' => implode(',', $filter)]);
         }
 
-        return collect($this->getResponse('postcodes?' . $filter, 'POST', ['postcodes' => array_values($postcodes)]))
-            ->map(function ($item) {
-                return $item->result;
-            });
+        return collect($this->getResponse(
+            'postcodes?' . $filter,
+            'POST',
+            ['postcodes' => array_values($postcodes)]
+        ))->map(function ($item) {
+            return $item->result;
+        });
     }
 
     /**
@@ -188,12 +191,17 @@ class PostcodeService
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getNearestOutwardCode(string $outwardcode, int $limit = 10, int $radius = 5000): Collection
-    {
+    public function getNearestOutwardCode(
+        string $outwardcode,
+        int $limit = 10,
+        int $radius = 5000
+    ): Collection {
         $limit = ($limit > 100) ? 100 : $limit;
         $radius = ($radius > 100) ? 25000 : $radius;
 
-        return collect($this->getResponse("outcodes/$outwardcode/nearest?limit=$limit&radius=$radius"));
+        return collect($this->getResponse(
+            "outcodes/$outwardcode/nearest?limit=$limit&radius=$radius"
+        ));
     }
 
     /**
@@ -225,8 +233,12 @@ class PostcodeService
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    protected function getResponse(string $uri = null, string $method = 'GET', array $data = [], array $options = [])
-    {
+    protected function getResponse(
+        string $uri = null,
+        string $method = 'GET',
+        array $data = [],
+        array $options = []
+    ) {
         $url = $this->url . $uri;
 
         if (!empty($data)) {
