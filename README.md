@@ -1,3 +1,9 @@
+<p align="center">
+
+![](laravel-postal-code-validation.png)
+
+</p>
+
 # LaravelPostcodes
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
@@ -243,6 +249,7 @@ If you discover any security related issues, please email juststevemcd@gmail.com
 
 - [Steve McDougall][link-author]
 - [All Contributors][link-contributors]
+- [Laravel News for the artiwork](https://www.laravel-news.com)
 
 ## License
 
