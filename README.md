@@ -1,3 +1,9 @@
+<p align="center">
+
+![](laravel-postal-code-validation.png)
+
+</p>
+
 # LaravelPostcodes
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
@@ -7,7 +13,7 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-A service wrapper around postcodes.io with validation rule and macro
+A service wrapper around [postcodes.io](postcodes.io) with validation rule and macro
 
 ## Install
 
@@ -243,6 +249,7 @@ If you discover any security related issues, please email juststevemcd@gmail.com
 
 - [Steve McDougall][link-author]
 - [All Contributors][link-contributors]
+- [Laravel News for the artiwork](https://www.laravel-news.com)
 
 ## License
 
