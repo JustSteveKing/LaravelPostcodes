@@ -4,10 +4,22 @@ All notable changes to `LaravelPostcodes` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## NEXT - YYYY-MM-DD
+## v1.1.0 - 2019-10-25
 
 ### Added
-- Nothing
+- Make tests more stringent
+- Unit tests make API calls 
+- Update Postcode Service
+- Bulk lookup postcodes
+- Get nearest postcodes for a given longitude & latitude
+- Nearest postcodes for postcode
+- Autocomplete a postcode partial
+- Query for postcode
+- Lookup terminated postcode
+- Lookup Outward Code
+- Nearest outward code for outward code
+- Get nearest outward codes for a given longitude & latitude
+- Convert all returns to return Collection instead off Array where appropriate
 
 ### Deprecated
 - Nothing
