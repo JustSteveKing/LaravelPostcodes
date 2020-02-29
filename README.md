@@ -77,6 +77,8 @@ If you want to interact with the service itself
 ```php
 <?php 
 
+use JustSteveKing\LaravelPostcodes\Service\PostcodeService;
+
 class SomeController extends Controller
 {
     protected $postcodes;
