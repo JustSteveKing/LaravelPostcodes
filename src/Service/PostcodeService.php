@@ -45,6 +45,21 @@ class PostcodeService
     {
         return $this->getResponse("postcodes/$postcode/validate");
     }
+    
+    /**
+     * Validate a Outcode against the RegEx
+     *
+     * @param string $postcode
+     *
+     * @return bool
+     */
+    public function validateOutcode(string $postcode): bool
+    {
+      if (preg_match('#^(GIR ?0AA|[A-PR-UWYZ]([0-9]{1,2}|([A-HK-Y][0-9]([0-9ABEHMNPRV-Y])?)|[0-9][A-HJKPS-UW])', $postcode)) {
+        return TRUE;
+      }
+      return FALSE;
+    }
 
     /**
      * Get the address details from a postcode
