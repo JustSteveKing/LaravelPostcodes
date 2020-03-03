@@ -4,6 +4,14 @@ All notable changes to `LaravelPostcodes` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## v1.2.0 - 2020-03-03
+
+### Added
+- A Pre validate option to validate, allowing regex matching to save service calls
+- A regex based outcode validation, this was a PR by PHPAdam that needed some work
+- Tests for both of the above
+- Laravel 7.* support
+
 ## v1.1.0 - 2019-10-25
 
 ### Added
