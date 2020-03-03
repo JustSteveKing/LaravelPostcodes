@@ -17,6 +17,11 @@ class PostcodesServiceProvider extends ServiceProvider
             'services'
         );
 
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/postcodes.php',
+            'postcodes'
+        );
+
         $this->app->bind(PostcodeService::class, function () {
             return new PostcodeService(
                 new Client()

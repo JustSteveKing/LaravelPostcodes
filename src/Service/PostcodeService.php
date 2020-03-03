@@ -38,12 +38,29 @@ class PostcodeService
      * Validate a postcode against the API
      *
      * @param string $postcode
+     * @param bool   $preValidate
      *
      * @return bool
      */
-    public function validate(string $postcode): bool
+    public function validate(string $postcode, bool $preValidate = false): bool
     {
+        if ($preValidate) {
+            return !! preg_match(config('postcodes.regex.postcode'), $postcode);
+        }
+
         return $this->getResponse("postcodes/$postcode/validate");
+    }
+
+    /**
+     * Validate an Outcode using RegEx - not supported by the API
+     * 
+     * @param  string  $postcode
+     * 
+     * @return bool
+     */
+    public function validateOutcode(string $postcode): bool
+    {
+        return !! preg_match(config('postcodes.regex.outcode'), $postcode);
     }
 
     /**

@@ -35,6 +35,26 @@ class PostcodeServiceTest extends TestCase
         $this->assertRequest('GET', 'https://api.postcodes.io/postcodes/N11 1QZ/validate');
     }
 
+    public function testServiceCanValidatePostcodeUsingPrevalidateOption()
+    {
+        $service = $this->service(200, json_encode(['result' => ['postcode' => $this->postcode]]));
+        $result = $service->validate($this->postcode, true);
+        $this->assertTrue($result);
+        
+        $fails = $service->validate('fake-postcode', true);
+        $this->assertEquals(false, $fails);
+    }
+
+    public function testServiceCanValidateAnOutcode()
+    {
+        $service = $this->service(200, json_encode(['result' => ['postcode' => $this->postcode]]));
+        $result = $service->validateOutcode($this->postcode);
+        $this->assertTrue($result);
+
+        $result = $service->validateOutcode("123123123123");
+        $this->assertEquals(false, $result);
+    }
+
     public function testServiceCanGetPostcode()
     {
         $service = $this->service(200, json_encode(['result' => ['postcode' => $this->postcode]]));
