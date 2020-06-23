@@ -8,11 +8,15 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
+use JustSteveKing\LaravelPostcodes\Service\BulkReverseGeocoding\Geolocation;
 use JustSteveKing\LaravelPostcodes\TestCase;
 use JustSteveKing\LaravelPostcodes\Service\PostcodeService;
 
 class PostcodeServiceTest extends TestCase
 {
+    private const LONGITUDE = 0.629834723775309;
+    private const LATITUDE = 51.7923246977375;
+
     /** @var MockHandler */
     protected $handler;
 
@@ -201,9 +205,13 @@ class PostcodeServiceTest extends TestCase
         $serviceFound = $this->service(200, $json);
 
         $expected = json_encode(json_decode($json)->result);
-        $actual = json_encode($serviceFound->nearestOutwardCodesForGivenLngAndLat(0.629834723775309, 51.7923246977375));
+        $actual = json_encode($serviceFound->nearestOutwardCodesForGivenLngAndLat(
+            self::LONGITUDE,
+            self::LATITUDE
+        ));
 
         $this->assertSame($expected, $actual);
+        $this->assertRequest('GET', 'https://api.postcodes.io/outcodes?lon=0.62983472377531&lat=51.792324697737');
     }
 
     public function testServiceCanHandleEmptyResponseForNearestOutwardCodesForGivenLongitudeAndLatitude()
@@ -216,6 +224,7 @@ class PostcodeServiceTest extends TestCase
         $actual = $serviceFound->nearestOutwardCodesForGivenLngAndLat(0, 0);
 
         $this->assertTrue($actual->isEmpty());
+        $this->assertRequest('GET', 'https://api.postcodes.io/outcodes?lon=0&lat=0');
     }
 
     public function testServiceCanGetNearestOutwardCode()
@@ -258,6 +267,45 @@ class PostcodeServiceTest extends TestCase
         $this->assertTrue($actual->isEmpty());
     }
 
+    public function testServiceCanBulkReverseGeocoding(): void
+    {
+        $json = file_get_contents(__DIR__ . '/../Fixtures/BulkReverseGeocoding.json');
+        $serviceFound = $this->service(200, $json);
+        $geolocations = [
+            new Geolocation(self::LONGITUDE, self::LATITUDE),
+            new Geolocation(-2.49690382054704, 53.5351312861402, 1000, 5),
+        ];
+
+        $expected = json_encode(json_decode($json)->result);
+        $actual = json_encode($serviceFound->bulkReverseGeocoding($geolocations, $geolocations));
+        $expectedRequestBody = json_encode(array_map(function (Geolocation $geolocation) {
+            return $geolocation->toArray();
+        }, $geolocations));
+
+        $this->assertSame($expected, $actual);
+        $this->assertRequest('POST', 'https://api.postcodes.io/postcodes', $expectedRequestBody);
+    }
+
+    public function testServiceCanHandleEmptyResponseForBulkReverseGeocoding(): void
+    {
+        $serviceFound = $this->service(
+            200,
+            json_encode(['result' => null])
+        );
+        $geolocations = [
+            new Geolocation(self::LONGITUDE, self::LATITUDE),
+            new Geolocation(-2.49690382054704, 53.5351312861402, 1000, 5),
+        ];
+
+        $actual = $serviceFound->bulkReverseGeocoding($geolocations, $geolocations);
+        $expectedRequestBody = json_encode(array_map(function (Geolocation $geolocation) {
+            return $geolocation->toArray();
+        }, $geolocations));
+
+        $this->assertNull($actual);
+        $this->assertRequest('POST', 'https://api.postcodes.io/postcodes', $expectedRequestBody);
+    }
+
     private function service(int $status, string $body = null): PostcodeService
     {
         $this->handler = new MockHandler([new Response($status, [], $body)]);
@@ -267,11 +315,17 @@ class PostcodeServiceTest extends TestCase
         return new PostcodeService($client);
     }
 
-    private function assertRequest(string $method, string $uri): void
-    {
+    private function assertRequest(
+        string $method,
+        string $uri,
+        string $body = null
+    ): void {
         $request = $this->handler->getLastRequest();
 
         $this->assertSame($method, $request->getMethod());
         $this->assertSame($uri, urldecode((string)$request->getUri()));
+        if ($body !== null) {
+            $this->assertSame($body, $request->getBody()->getContents());
+        }
     }
 }
