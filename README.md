@@ -55,7 +55,7 @@ $this->validate($request, [
     'postcode' => [
         'required',
         'string',
-        new Postcode()
+        new Postcode(resolve(PostcodeService::class))
     ]
 ]);
 ```
