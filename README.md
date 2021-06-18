@@ -13,7 +13,7 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-A service wrapper around [postcodes.io](postcodes.io) with validation rule and macro
+A service wrapper around [postcodes.io](https://postcodes.io/) with validation rule and macro
 
 ## Install
 
