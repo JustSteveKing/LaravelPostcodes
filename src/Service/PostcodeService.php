@@ -55,9 +55,9 @@ class PostcodeService
 
     /**
      * Validate an Outcode using RegEx - not supported by the API
-     * 
+     *
      * @param  string  $postcode
-     * 
+     *
      * @return bool
      */
     public function validateOutcode(string $postcode): bool

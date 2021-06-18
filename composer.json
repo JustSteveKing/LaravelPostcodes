@@ -51,7 +51,10 @@
         "laravel": {
             "providers": [
                 "JustSteveKing\\LaravelPostcodes\\PostcodesServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "Postcode": "JustSteveKing\\LaravelPostcodes\\Facades\\Postcode"
+            }
         }
     },
     "config": {

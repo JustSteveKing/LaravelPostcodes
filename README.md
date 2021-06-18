@@ -72,7 +72,7 @@ $this->validate($request, [
 ]);
 ```
 
-If you want to interact with the service itself
+If you want to interact with the service itself:
 
 ```php
 <?php 
@@ -96,6 +96,21 @@ class SomeController extends Controller
 }
 ```
 
+Or use the facade:
+
+```php
+<?php 
+
+class SomeController extends Controller
+{
+    public function store(Request $request)
+    {
+        // validation using example above
+        $location = Postcode::getPostcode($request->postcode);
+    }
+}
+```
+
 ### Validate
 
 ```php
@@ -104,6 +119,9 @@ class SomeController extends Controller
 $service = resolve(PostcodeService::class);
 
 $service->validate('AB10 1AB');
+
+// You can also use the facade:
+Postcode::validate('AB10 1AB');
 ```
 
 ### Validate Postcode
@@ -114,6 +132,9 @@ $service->validate('AB10 1AB');
 $service = resolve(PostcodeService::class);
 
 $service->validate('AB10 1AB');
+
+// You can also use the facade:
+Postcode::validate('AB10 1AB');
 ```
 
 ### Get Postcode information
@@ -124,6 +145,9 @@ $service->validate('AB10 1AB');
 $service = resolve(PostcodeService::class);
 
 $service->getPostcode('AB10 1AB');
+
+// You can also use the facade:
+Postcode::getPostcode('AB10 1AB');
 ```
 
 
@@ -135,6 +159,13 @@ $service->getPostcode('AB10 1AB');
 $service = resolve(PostcodeService::class);
 
 $service->getPostcodes([
+    'AB10 1AB',
+    'AB10 1AF',
+    'AB10 1AG',
+]);
+
+// You can also use the facade:
+Postcode::getPostcodes([
     'AB10 1AB',
     'AB10 1AF',
     'AB10 1AG',
@@ -152,6 +183,12 @@ $service->nearestPostcodesForGivenLngAndLat(
     0.629806,
     51.792326
 );
+
+// You can also use the facade:
+Postcode::nearestPostcodesForGivenLngAndLat(
+    0.629806,
+    51.792326
+);
 ```
 
 ### Nearest postcodes for postcode
@@ -162,6 +199,9 @@ $service->nearestPostcodesForGivenLngAndLat(
 $service = resolve(PostcodeService::class);
 
 $service->nearest('AB10 1AB');
+
+// You can also use the facade:
+Postcode::nearest('AB10 1AB');
 ```
 
 ### Autocomplete a postcode partial
@@ -172,6 +212,9 @@ $service->nearest('AB10 1AB');
 $service = resolve(PostcodeService::class);
 
 $service->autocomplete('AB10');
+
+// You can also use the facade:
+Postcode::autocomplete('AB10');
 ```
 
 ### Query for postcode
@@ -182,6 +225,9 @@ $service->autocomplete('AB10');
 $service = resolve(PostcodeService::class);
 
 $service->query('AB10 1AB');
+
+// You can also use the facade:
+Postcode::query('AB10 1AB');
 ```
 
 ### Lookup terminated postcode
@@ -192,6 +238,9 @@ $service->query('AB10 1AB');
 $service = resolve(PostcodeService::class);
 
 $service->getTerminatedPostcode('AB1 0AA');
+
+// You can also use the facade:
+Postcode::getTerminatedPostcode('AB1 0AA');
 ```
 
 ### Lookup Outward Code
@@ -202,6 +251,9 @@ $service->getTerminatedPostcode('AB1 0AA');
 $service = resolve(PostcodeService::class);
 
 $service->getOutwardCode('N11');
+
+// You can also use the facade:
+Postcode::getOutwardCode('N11');
 ```
 
 ### Nearest outward code for outward code
@@ -214,6 +266,9 @@ $service = resolve(PostcodeService::class);
 $limit = 80; // Limit needs to be less than 100
 $radius = 15000; // Radius needs to be less than 25000
 $service->getNearestOutwardCode('N11', $limit, $radius);
+
+// You can also use the facade:
+Postcode::getNearestOutwardCode('N11', $limit, $radius);
 ```
 
 ### Get nearest outward codes for a given longitude & latitude
@@ -224,6 +279,12 @@ $service->getNearestOutwardCode('N11', $limit, $radius);
 $service = resolve(PostcodeService::class);
 
 $service->nearestOutwardCodesForGivenLngAndLat(
+    0.629806,
+    51.792326
+);
+
+// You can also use the facade:
+Postcode::nearestOutwardCodesForGivenLngAndLat(
     0.629806,
     51.792326
 );
