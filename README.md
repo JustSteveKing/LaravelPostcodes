@@ -23,7 +23,7 @@ Via Composer
 $ composer require juststeveking/laravel-postcodes
 ```
 
-After installation, merge configuration for services uusing:
+After installation, merge configuration for services using:
 
 ```bash
 $ php artisan vendor:publish --provider="JustSteveKing\LaravelPostcodes\PostcodesServiceProvider"
@@ -251,7 +251,7 @@ If you discover any security related issues, please email juststevemcd@gmail.com
 
 - [Steve McDougall][link-author]
 - [All Contributors][link-contributors]
-- [Laravel News for the artiwork](https://www.laravel-news.com)
+- [Laravel News for the artwork](https://www.laravel-news.com)
 
 ## License
 
