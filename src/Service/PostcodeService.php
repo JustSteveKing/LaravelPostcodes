@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace JustSteveKing\LaravelPostcodes\Service;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Query;
 use Illuminate\Support\Collection;
-use function GuzzleHttp\Psr7\build_query;
 use GuzzleHttp\Exception\GuzzleException;
 use JustSteveKing\LaravelPostcodes\Service\BulkReverseGeocoding\Geolocation;
 
@@ -90,7 +90,7 @@ class PostcodeService
     public function getPostcodes(array $postcodes, array $filter = []): Collection
     {
         if (!empty($filter)) {
-            $filter = build_query(['filter' => implode(',', $filter)]);
+            $filter = Query::build(['filter' => implode(',', $filter)]);
         }
 
         return collect($this->getResponse(
