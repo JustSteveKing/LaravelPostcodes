@@ -47,7 +47,7 @@ class PostcodeService
     public function validate(string $postcode, bool $preValidate = false): bool
     {
         if ($preValidate) {
-            return !! preg_match(config('postcodes.regex.postcode'), $postcode);
+            return !!preg_match(config('postcodes.regex.postcode'), $postcode);
         }
 
         return $this->getResponse("postcodes/$postcode/validate");
@@ -62,7 +62,7 @@ class PostcodeService
      */
     public function validateOutcode(string $postcode): bool
     {
-        return !! preg_match(config('postcodes.regex.outcode'), $postcode);
+        return !!preg_match(config('postcodes.regex.outcode'), $postcode);
     }
 
     /**
@@ -121,7 +121,7 @@ class PostcodeService
      */
     public function getRandomPostcode()
     {
-        return $this->getResponse("random/postcodes");
+        return $this->getResponse('random/postcodes');
     }
 
     /**
