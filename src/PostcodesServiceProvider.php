@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace JustSteveKing\LaravelPostcodes;
 
 use GuzzleHttp\Client;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\ServiceProvider;
+use JustSteveKing\LaravelPostcodes\Rules\Postcode;
 use JustSteveKing\LaravelPostcodes\Service\PostcodeService;
 
 class PostcodesServiceProvider extends ServiceProvider
@@ -28,13 +30,8 @@ class PostcodesServiceProvider extends ServiceProvider
             );
         });
 
-        \Illuminate\Validation\Rule::macro('postcode', function () {
-            return new \JustSteveKing\LaravelPostcodes\Rules\Postcode(resolve(PostcodeService::class));
+        Rule::macro('postcode', function () {
+            return new Postcode(resolve(PostcodeService::class));
         });
-    }
-
-    public function boot()
-    {
-        //
     }
 }
