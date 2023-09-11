@@ -89,12 +89,14 @@ class PostcodeService
      */
     public function getPostcodes(array $postcodes, array $filter = []): Collection
     {
+        $queryParams = '';
+
         if (!empty($filter)) {
-            $filter = Query::build(['filter' => implode(',', $filter)]);
+            $queryParams = Query::build(['filter' => implode(',', $filter)]);
         }
 
         return collect($this->getResponse(
-            'postcodes?' . $filter,
+            'postcodes?' . $queryParams,
             'POST',
             ['postcodes' => array_values($postcodes)]
         ))->map(function ($item) {
