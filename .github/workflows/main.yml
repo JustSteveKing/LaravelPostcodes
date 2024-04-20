@@ -6,10 +6,11 @@ on:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
+
     strategy:
       matrix:
-        php: [8.0, 8.1]
-        laravel: [9.*, 10.*]
+        php: [8.0, 8.1, '8.2']
+        laravel: ['9.*', '10.*', '11.*']
         dependency-version: [prefer-lowest, prefer-stable]
         os: [ubuntu-latest]
         include:
@@ -17,6 +18,13 @@ jobs:
             testbench: 8.*
           - laravel: 9.*
             testbench: 7.*
+          - laravel: 11.*
+            testbench: 9.*
+        exclude:
+          - laravel: 11.*
+            php: 8.0
+          - laravel: 11.*
+            php: 8.1
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
 
@@ -27,21 +35,22 @@ jobs:
       - name: Cache dependencies
         uses: actions/cache@v1
         with:
-            path: ~/.composer/cache/files
-            key: dependencies-laravel-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+          path: ~/.composer/cache/files
+          key: dependencies-laravel-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-            php-version: ${{ matrix.php }}
-            extensions: xml, pcov, dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, mysql, mysqli, pdo_mysql, bcmath, soap, intl, gd, exif, iconv
-            ini-values: post_max_size=256M
-            tools: pecl
-            coverage: none
+          php-version: ${{ matrix.php }}
+          extensions: xml, pcov, dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, mysql, mysqli, pdo_mysql, bcmath, soap, intl, gd, exif, iconv
+          ini-values: post_max_size=256M
+          tools: pecl
+          coverage: none
 
       - name: Install dependencies
         run: |
-            composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
-            composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-suggest
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+          composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-suggest
+
       - name: Execute tests
         run: vendor/bin/phpunit
